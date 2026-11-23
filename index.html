@@ -1,0 +1,452 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>CompEval – Évaluer par compétences en EPS</title>
+<meta name="description" content="Grilles d'évaluation par compétences paramétrables, intégrées à Mes Apps EPS">
+<meta name="theme-color" content="#0a1428">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<style>
+:root{--bg:#0a1428;--tx:#eef3ff;--mut:rgba(238,243,255,.62);--glass:rgba(255,255,255,.07);--bd:rgba(255,255,255,.15);--c1:#ff8a1f;--c2:#2f9bff;--c3:#ffd27a;--g1:rgba(255,138,31,.20);--g2:rgba(47,155,255,.22);--ok:#6ff0a0;--ko:#ff8f8f}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}[hidden]{display:none!important}
+body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--tx);min-height:100vh;background:var(--bg);padding-bottom:60px;line-height:1.45}
+body::before{content:'';position:fixed;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(ellipse at 8% 4%,var(--g1),transparent 55%),radial-gradient(ellipse at 94% 96%,var(--g2),transparent 55%)}
+header{display:flex;align-items:center;gap:14px;padding:18px 16px 10px;max-width:1200px;margin:auto}
+header img{width:62px;height:62px;flex:none;border-radius:50%;box-shadow:0 0 26px rgba(47,155,255,.45)}
+header .t{flex:1;min-width:0}
+h1{margin:0;font-size:1.6rem;font-weight:900;letter-spacing:.07em;text-transform:uppercase;line-height:1.1;background:linear-gradient(90deg,var(--c1),var(--c3));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+header p{margin:3px 0 0;font-size:.7rem;font-weight:600;color:var(--mut);letter-spacing:.1em;text-transform:uppercase}
+main{max-width:1200px;margin:auto;padding:0 12px}
+.card{background:var(--glass);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid var(--bd);border-radius:18px;padding:16px;margin-bottom:14px;box-shadow:0 10px 30px #0006,inset 0 1px 0 #ffffff18}
+h2{margin:0 0 12px;font-size:.82rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--c1)}
+h3{margin:0 0 6px;font-size:1rem}
+.btn{border:0;border-radius:12px;padding:10px 16px;font:inherit;font-weight:800;font-size:.88rem;color:#fff;cursor:pointer;background:linear-gradient(135deg,#ffa21f,#ff5e00);box-shadow:0 6px 18px #ff5e0040,inset 0 1px 0 #ffffff55;text-shadow:0 1px 2px #0003;display:inline-flex;align-items:center;gap:6px;text-decoration:none;transition:transform .12s,filter .15s;white-space:nowrap}
+.btn:hover{filter:brightness(1.1)}.btn:active{transform:scale(.97)}.btn:disabled{opacity:.4;cursor:default}
+.btn.b{background:linear-gradient(135deg,#2f9bff,#0a4fd0);box-shadow:0 6px 18px #0a4fd045,inset 0 1px 0 #ffffff55}
+.btn.r{background:rgba(255,255,255,.1);border:1.5px solid var(--bd);box-shadow:none;text-shadow:none}
+.btn.d{background:rgba(255,80,80,.16);border:1.5px solid rgba(255,120,120,.4);box-shadow:none;text-shadow:none}
+.btn.sm{padding:6px 11px;font-size:.8rem;border-radius:10px}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.sp{flex:1}
+label.f{display:flex;flex-direction:column;gap:4px;font-size:.74rem;font-weight:700;color:var(--mut);text-transform:uppercase;letter-spacing:.05em}
+input,select,textarea{font:inherit;color:var(--tx);background:rgba(0,0,0,.28);border:1.5px solid var(--bd);border-radius:10px;padding:8px 10px;min-width:0}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--c2)}
+select option{background:#13213d}
+textarea{resize:vertical}
+input[type=color]{padding:0;width:38px;height:32px;border-radius:8px;cursor:pointer;flex:none}
+input[type=number]{width:78px}
+.tabs{display:flex;gap:6px;max-width:1200px;margin:0 auto 12px;padding:0 12px;position:sticky;top:0;z-index:5;padding-top:6px;padding-bottom:6px;background:linear-gradient(var(--bg) 70%,transparent)}
+.tabs button{flex:1;border:1.5px solid var(--bd);background:var(--glass);color:var(--tx);font:inherit;font-weight:800;font-size:.9rem;padding:10px 6px;border-radius:12px;cursor:pointer}
+.tabs button.on{background:linear-gradient(135deg,#2f9bff,#0a4fd0);border-color:transparent}
+.msg{font-size:.85rem;font-weight:700}.msg.ok{color:var(--ok)}.msg.ko{color:var(--ko)}
+.mut{color:var(--mut);font-size:.85rem}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:12px}
+/* Chips élèves */
+.chips{display:flex;flex-wrap:wrap;gap:6px;max-height:190px;overflow:auto;padding:2px}
+.chip{border:1.5px solid var(--bd);background:rgba(255,255,255,.06);color:var(--tx);font:inherit;font-size:.82rem;padding:5px 10px;border-radius:999px;cursor:pointer;display:inline-flex;gap:5px;align-items:center}
+.chip.on{border-color:var(--c1);background:rgba(255,138,31,.22)}
+.chip i{font-style:normal;width:9px;height:9px;border-radius:50%;background:rgba(255,255,255,.18);flex:none}
+.chip i.p{background:var(--c3)}.chip i.c{background:var(--ok)}.chip i.a{background:#9aa6c4}
+/* Grille d'évaluation */
+.ehead{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.ehead .who{flex:1;text-align:center;font-size:1.15rem}
+.ehead .who small{display:block;color:var(--mut);font-size:.8rem}
+table.g{border-collapse:separate;border-spacing:5px;width:100%;min-width:560px}
+table.g th,table.g td{vertical-align:middle}
+table.g thead th{font-size:.82rem;padding:8px 6px;border-radius:10px;background:var(--lc);color:var(--lt);text-align:center}
+table.g thead th small{display:block;font-weight:600;opacity:.85}
+table.g tbody th{text-align:left;font-size:.9rem;padding:8px 10px;background:#1b2843;border-radius:10px;width:22%;min-width:140px;position:sticky;left:0;z-index:2;box-shadow:6px 0 10px -6px #0009}
+table.g tbody th small{display:block;color:var(--mut);font-weight:600}
+td.cl{background:var(--lt2);border:2px solid transparent;border-radius:10px;padding:10px 8px;font-size:.84rem;cursor:pointer;text-align:center;transition:transform .1s,background .15s;user-select:none;position:relative;min-height:54px}
+td.cl:hover{border-color:var(--lc)}
+td.cl:active{transform:scale(.97)}
+td.cl.on{background:var(--lc);color:var(--lt);border-color:#fff;font-weight:700;box-shadow:0 0 0 2px var(--lc),0 6px 16px #0007}
+td.cl.on::after{content:'✔';position:absolute;top:3px;right:6px;font-size:.8rem}
+td.cl .e{opacity:.55;font-style:italic}
+td.cl.on .e{opacity:.9}
+.dis td.cl{opacity:.35;pointer-events:none}
+.seg{display:inline-flex;border:1.5px solid var(--bd);border-radius:11px;overflow:hidden}
+.seg button{border:0;background:transparent;color:var(--tx);font:inherit;font-size:.82rem;font-weight:700;padding:7px 12px;cursor:pointer}
+.seg button.on{background:var(--c2)}
+.score{display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:center;padding:12px;border-radius:14px;background:rgba(0,0,0,.25);margin:12px 0}
+.score .big{font-size:2rem;font-weight:900;color:var(--c3)}
+.score .big small{font-size:1rem;color:var(--mut)}
+/* Éditeur */
+table.ed{border-collapse:separate;border-spacing:5px;min-width:640px;width:100%}
+table.ed th,table.ed td{vertical-align:top;padding:6px;border-radius:10px}
+table.ed thead th{background:var(--lt2);border-top:6px solid var(--lc);min-width:150px}
+table.ed thead th.it{background:rgba(255,255,255,.06);border-top-color:transparent;min-width:170px;text-align:left}
+table.ed td{background:var(--lt2)}
+table.ed td.it{background:rgba(255,255,255,.06)}
+table.ed textarea{width:100%;min-height:62px;font-size:.84rem}
+table.ed input.nm{width:100%;font-weight:700}
+.hv{display:flex;gap:6px;align-items:center;margin-top:6px;font-size:.78rem;color:var(--mut)}
+.hv input[type=number]{width:70px}
+.cp{display:flex;gap:4px;align-items:center;margin-top:4px;font-size:.75rem;color:var(--mut)}
+.cp input{width:64px;padding:4px 6px}
+.cnt{align-self:flex-start;display:inline-flex;align-items:center;border:1.5px solid var(--bd);border-radius:10px;overflow:hidden}
+.cnt button{border:0;background:rgba(255,255,255,.08);color:var(--tx);font:inherit;font-weight:900;width:34px;height:36px;cursor:pointer}
+.cnt span{min-width:34px;text-align:center;font-weight:800}
+/* Liste des grilles */
+.gl{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:12px}
+.gc{border:1.5px solid var(--bd);border-radius:14px;padding:12px;background:rgba(255,255,255,.04)}
+.gc .bar{display:flex;height:8px;border-radius:5px;overflow:hidden;margin:8px 0}
+.gc .bar i{flex:1}
+.gc .row{gap:6px}
+/* Résultats */
+table.rs{border-collapse:collapse;width:100%;font-size:.84rem;min-width:520px}
+table.rs th,table.rs td{padding:6px 8px;border-bottom:1px solid var(--bd);text-align:center}
+table.rs th:first-child,table.rs td:first-child{text-align:left}
+table.rs thead th{font-size:.74rem;color:var(--mut);font-weight:700;vertical-align:bottom}
+table.rs tbody tr:hover{background:rgba(255,255,255,.05)}
+table.rs button.nm{all:unset;cursor:pointer}
+table.rs button.nm:hover{text-decoration:underline}
+.lv{display:inline-block;min-width:26px;padding:2px 6px;border-radius:7px;font-weight:800;font-size:.78rem}
+.dist{display:flex;height:10px;border-radius:5px;overflow:hidden;min-width:60px;background:rgba(255,255,255,.08)}
+.leg{display:flex;flex-wrap:wrap;gap:10px;font-size:.8rem;margin-top:8px}
+.leg span{display:inline-flex;gap:5px;align-items:center}
+.leg i{width:12px;height:12px;border-radius:3px;display:inline-block}
+.dates{display:flex;flex-wrap:wrap;gap:6px}
+.hint{font-size:.8rem;color:var(--mut);margin-top:6px}
+footer{max-width:1200px;margin:10px auto;padding:0 16px;font-size:.74rem;color:var(--mut);text-align:center}
+@media (max-width:640px){h1{font-size:1.3rem}header img{width:48px;height:48px}.tabs button{font-size:.8rem}table.g tbody th{min-width:110px;font-size:.8rem}td.cl{font-size:.78rem;min-width:110px}}
+@media print{body{background:#fff;color:#000;padding:0}body::before,header .btn,.tabs,.noprint,footer{display:none!important}.card{box-shadow:none;border:1px solid #ccc;background:#fff;backdrop-filter:none}h1{-webkit-text-fill-color:#000}table.rs th,table.rs td{border-color:#ccc}.mut,table.rs thead th{color:#444}}
+</style>
+</head>
+<body>
+<header>
+ <img src="icons/icon-192.png" alt="">
+ <div class="t"><h1>CompEval</h1><p>Évaluer par compétences · Mes Apps EPS</p></div>
+ <a class="btn r sm" href="https://vinztoc.github.io/Mes_Apps_EPS/" title="Retour au portail Mes Apps EPS">🏠 Portail</a>
+</header>
+
+<nav class="tabs">
+ <button data-t="eval" class="on">✅ Évaluer</button>
+ <button data-t="grilles">🧩 Mes grilles</button>
+ <button data-t="res">📊 Résultats</button>
+</nav>
+
+<main>
+ <!-- Liste des élèves absente -->
+ <section class="card" id="noList" hidden>
+  <h2>Liste des élèves</h2>
+  <p class="mut">Aucun élève trouvé sur cet appareil. Importez d'abord votre fichier Pronote dans <b>Mes Apps EPS</b> (même navigateur), ou chargez directement le fichier élèves (.xlsx ou .csv) de Mes Apps EPS.</p>
+  <div class="row"><label class="btn b">📥 Charger la liste<input type="file" accept=".xlsx,.csv" hidden data-load></label><span class="msg" id="loadMsg"></span></div>
+ </section>
+
+ <!-- ÉVALUER -->
+ <section id="t-eval">
+  <div class="card">
+   <div class="row">
+    <label class="f" style="flex:2;min-width:200px">Grille d'évaluation<select id="eGrid"></select></label>
+    <label class="f" style="flex:1;min-width:130px">Classe<select id="eClasse"></select></label>
+    <label class="f" style="min-width:150px">Date<input type="date" id="eDate"></label>
+   </div>
+   <div class="dates" id="eDates" style="margin-top:8px"></div>
+   <div style="margin-top:12px" class="chips" id="eChips"></div>
+   <div class="hint">● gris : non évalué · ● jaune : en cours · ● vert : grille complète · ● bleu-gris : absent / dispensé</div>
+  </div>
+  <div class="card" id="ePanel"></div>
+ </section>
+
+ <!-- GRILLES -->
+ <section id="t-grilles" hidden>
+  <div class="card" id="gList"></div>
+  <div class="card" id="gEdit" hidden></div>
+ </section>
+
+ <!-- RÉSULTATS -->
+ <section id="t-res" hidden>
+  <div class="card">
+   <div class="row noprint">
+    <label class="f" style="flex:2;min-width:200px">Grille d'évaluation<select id="rGrid"></select></label>
+    <label class="f" style="flex:1;min-width:130px">Classe<select id="rClasse"></select></label>
+    <label class="f" style="min-width:150px">Date<input type="date" id="rDate"></label>
+   </div>
+   <div class="dates noprint" id="rDates" style="margin-top:8px"></div>
+  </div>
+  <div class="card" id="rBody"></div>
+ </section>
+</main>
+<footer>CompEval · données enregistrées uniquement sur cet appareil (navigateur) et dans Mes Apps EPS · <span id="ver"></span></footer>
+
+<script src="version.js"></script>
+<script src="eps-core.js"></script>
+<script>
+'use strict';
+/* ═════════ CompEval — évaluation par compétences, intégrée à Mes Apps EPS ═════════
+   Grilles (définitions) : localStorage « compeval_v1 ».
+   Saisies : localStorage + Mes Apps EPS (EPS.setExt, mode « lignes » : une ligne par élève, par grille et par date). */
+const APP='compeval',KEY='compeval_v1';
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const num=v=>{const n=parseFloat(String(v??'').replace(',','.'));return isFinite(n)?n:0};
+const fmt=n=>(Math.round(n*100)/100).toLocaleString('fr-FR',{maximumFractionDigits:2});
+const today=()=>{const d=new Date();return new Date(d-d.getTimezoneOffset()*6e4).toISOString().slice(0,10)};
+const frD=i=>i?i.split('-').reverse().join('/'):'';
+const uid=()=>'g'+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+const clone=o=>JSON.parse(JSON.stringify(o));
+const hexOk=h=>/^#[0-9a-f]{6}$/i.test(h)?h:'#888888';
+const txtOn=h=>{h=hexOk(h);const r=parseInt(h.slice(1,3),16),g=parseInt(h.slice(3,5),16),b=parseInt(h.slice(5,7),16);return(.299*r+.587*g+.114*b)/255>.62?'#111':'#fff'};
+const lvVars=n=>`--lc:${hexOk(n.couleur)};--lt:${txtOn(n.couleur)};--lt2:${hexOk(n.couleur)}2e`;
+const cmpFr=(a,b)=>String(a).localeCompare(String(b),'fr',{numeric:true});
+
+/* ───── Modèle ─────
+ grille : {id, nom, activite, mode:'pct'|'pts', sur, arrondi,
+           niveaux:[{nom, couleur, pct, pts}],
+           items:[{nom, pts (mode %), ind:[texte par niveau], p:[points par niveau (mode points)]}]} */
+const LV=[['Maîtrise insuffisante','#e53935',0,0],['Maîtrise fragile','#fb8c00',33,2],['Maîtrise satisfaisante','#7cb342',67,3.5],['Très bonne maîtrise','#2e7d32',100,5]];
+function newGrid(nbI=4,nbN=4){const niv=LV.slice(0,nbN).map(([nom,couleur,pct,pts])=>({nom,couleur,pct,pts}));
+ return{id:uid(),nom:'Nouvelle évaluation',activite:'',mode:'pct',sur:20,arrondi:.5,niveaux:niv,
+  items:Array.from({length:nbI},(_,i)=>({nom:'Compétence '+(i+1),pts:5,ind:niv.map(()=>''),p:niv.map(n=>n.pts)}))}}
+function exampleGrid(){const g=newGrid();g.nom='Exemple · Course de demi-fond';g.activite='Demi-fond';
+ const T=[['Gérer son allure',['Allure irrégulière, départ trop rapide','Allure tenue sur une partie de la course','Allure régulière, proche du projet','Allure régulière et ajustée aux sensations']],
+  ['Respecter son projet de course',['Projet non respecté','Écart important au projet','Écart faible au projet','Projet respecté']],
+  ['Utiliser des indicateurs (FC, ressenti)',['Aucun indicateur utilisé','Indicateurs relevés mais non exploités','Indicateurs utilisés pour réguler','Analyse et régulation autonomes']],
+  ['Rôle d\'observateur / coach',['Relevés absents ou erronés','Relevés partiels','Relevés fiables','Relevés fiables et conseils pertinents']]];
+ g.items.forEach((it,i)=>{it.nom=T[i][0];it.ind=T[i][1].slice()});return g}
+
+let S=load();let L=[];   // L : élèves de Mes Apps EPS
+function load(){try{const s=JSON.parse(localStorage.getItem(KEY));if(s&&Array.isArray(s.grids))return Object.assign({evals:{},cur:{},auto:false},s)}catch(e){}
+ return{grids:[exampleGrid()],evals:{},cur:{},auto:false}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+const G=id=>S.grids.find(g=>g.id===id);
+const curG=()=>G(S.cur.gid)||S.grids[0];
+
+/* ───── Calcul de la note ───── */
+const maxItem=(g,it)=>g.mode==='pct'?num(it.pts):Math.max(0,...(it.p||[]).slice(0,g.niveaux.length).map(num));
+const itemPts=(g,it,j)=>g.mode==='pct'?num(it.pts)*num(g.niveaux[j].pct)/100:num((it.p||[])[j]);
+const valid=(g,j)=>j!=null&&j>=0&&j<g.niveaux.length;
+function maxTot(g){return g.items.reduce((s,it)=>s+maxItem(g,it),0)}
+function score(g,ev){const c=(ev&&ev.c)||[];let s=0,n=0;const m=maxTot(g);
+ g.items.forEach((it,i)=>{if(valid(g,c[i])){s+=itemPts(g,it,c[i]);n++}});
+ const sur=num(g.sur)>0?num(g.sur):m;let note=m?s/m*sur:0;const a=num(g.arrondi);if(a>0)note=Math.round(note/a+1e-9)*a;
+ return{s,m,n,tot:g.items.length,note,sur,pct:m?Math.round(100*s/m):0}}
+
+/* ───── Saisies ───── */
+const evOf=(gid,date,eid)=>(((S.evals[gid]||{})[date]||{})[eid]);
+function evSet(gid,date,eid,ev){((S.evals[gid]=S.evals[gid]||{})[date]=S.evals[gid][date]||{})[eid]=ev;save()}
+const isEmpty=ev=>!ev||(!ev.st&&!(ev.c||[]).some(x=>x!=null)&&!ev.com);
+function etat(g,ev){if(!ev||isEmpty(ev))return'';if(ev.st)return'a';const n=(ev.c||[]).filter((x,i)=>i<g.items.length&&valid(g,x)).length;return n>=g.items.length?'c':n?'p':''}
+
+/* ───── Lien avec Mes Apps EPS ───── */
+const ikey=(it,i)=>`${i+1}. ${(it.nom||'Compétence').trim()}`;
+function ligne(g,date,ev){const o={Date:date,'Évaluation':g.nom};if(g.activite)o['Activité']=g.activite;
+ if(ev.st)o.Statut=ev.st;
+ g.items.forEach((it,i)=>{const j=(ev.c||[])[i];if(valid(g,j))o[ikey(it,i)]=g.niveaux[j].nom});
+ if(!ev.st){const r=score(g,ev);if(r.n){o.Note=Math.round(r.note*100)/100;o.Sur=r.sur;o['Réussite']=r.pct+' %';if(r.n<r.tot)o['Items évalués']=r.n+'/'+r.tot}}
+ if(ev.com)o.Commentaire=ev.com;return o}
+/* Récupère les saisies déjà présentes dans Mes Apps EPS (autre appareil, import du fichier compilé…) */
+function epsLines(e){const d=(e.ext||{})[APP];return d&&Array.isArray(d.lignes)?d.lignes:[]}
+function hydrate(g){if(!g)return;let ch=false;
+ for(const e of L)for(const l of epsLines(e)){if(l['Évaluation']!==g.nom||!l.Date)continue;const date=String(l.Date);
+  if(evOf(g.id,date,e.id))continue;
+  const ev={c:g.items.map((it,i)=>{const v=l[ikey(it,i)];const j=g.niveaux.findIndex(n=>n.nom===v);return j>=0?j:null}),st:l.Statut||'',com:l.Commentaire||''};
+  if(!isEmpty(ev)){evSet(g.id,date,e.id,ev);ch=true}}
+ return ch}
+function datesOf(g){const s=new Set(Object.keys(S.evals[g.id]||{}).filter(d=>Object.values(S.evals[g.id][d]).some(ev=>!isEmpty(ev))));return[...s].sort().reverse()}
+
+const pend=new Map();let tmr=null;
+function queue(gid,date,eid){pend.set(gid+'|'+date+'|'+eid,{gid,date,eid});clearTimeout(tmr);tmr=setTimeout(flush,700)}
+/* Écrit dans Mes Apps EPS : remplace la ligne (même date, même évaluation) de chaque élève concerné. oldNames : anciens noms de la grille (renommage). */
+async function flush(extra,oldNames){clearTimeout(tmr);const jobs=[...pend.values(),...(extra||[])];pend.clear();if(!jobs.length)return 0;
+ try{L=await EPS.all()}catch(e){status('Mes Apps EPS inaccessible : '+e.message,false);return 0}
+ const byE=new Map();jobs.forEach(j=>{if(!byE.has(j.eid))byE.set(j.eid,[]);byE.get(j.eid).push(j)});let n=0;
+ for(const[eid,js]of byE){const e=L.find(x=>x.id===eid);if(!e)continue;let lines=epsLines(e).slice();
+  for(const j of js){const g=G(j.gid);if(!g)continue;const names=[g.nom,...((oldNames||{})[g.id]||[])];
+   lines=lines.filter(l=>!(String(l.Date)===j.date&&names.includes(l['Évaluation'])));
+   const ev=evOf(j.gid,j.date,eid);if(!isEmpty(ev))lines.push(ligne(g,j.date,ev))}
+  lines.sort((a,b)=>String(a.Date)<String(b.Date)?-1:String(a.Date)>String(b.Date)?1:0);
+  try{await EPS.setExt(APP,eid,{lignes:lines});e.ext=e.ext||{};(e.ext[APP]=e.ext[APP]||{}).lignes=lines;n++}catch(err){status('Erreur d\'enregistrement : '+err,false);return n}}
+ status(`✔ Enregistré dans Mes Apps EPS (${n} élève${n>1?'s':''})`,true);return n}
+let stMsg={t:'',ok:true};
+function status(t,ok){stMsg={t,ok};document.querySelectorAll('[data-status]').forEach(x=>{x.textContent=t;x.className='msg '+(ok?'ok':'ko')})}
+/* Toutes les saisies d'une grille (toutes dates, tous élèves) → Mes Apps EPS */
+function jobsGrid(g,date,ids){const out=[];const E=S.evals[g.id]||{};for(const d of Object.keys(E)){if(date&&d!==date)continue;for(const eid of Object.keys(E[d]))if(!ids||ids.includes(eid))out.push({gid:g.id,date:d,eid})}return out}
+
+/* ───── Élèves ───── */
+const classes=()=>[...new Set(L.map(e=>e.classe||''))].sort(cmpFr);
+const elevesDe=c=>L.filter(e=>(e.classe||'')===c).sort((a,b)=>cmpFr(a.nom+' '+a.prenom,b.nom+' '+b.prenom));
+async function loadEleves(){try{L=await EPS.all()}catch(e){L=[]}$('#noList').hidden=L.length>0}
+document.addEventListener('change',async ev=>{const inp=ev.target;if(!inp.matches('[data-load]')||!inp.files[0])return;
+ const m=$('#loadMsg');try{const r=await EPS.importFile(inp.files[0]);await loadEleves();S.grids.forEach(hydrate);m.className='msg ok';m.textContent=`✔ ${L.length} élève(s) disponibles`+(r&&r.add?` (${r.add} ajouté(s))`:'');renderAll()}
+ catch(e){m.className='msg ko';m.textContent='✖ '+(e.message||e)}inp.value=''});
+
+/* ───── Onglets ───── */
+let tab='eval';
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{tab=b.dataset.t;document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+ ['eval','grilles','res'].forEach(t=>$('#t-'+t).hidden=t!==tab);renderAll()});
+function renderAll(){if(tab==='eval')renderEval();else if(tab==='grilles')renderList();else renderRes()}
+
+function fillSelectors(p){const g=curG();
+ $('#'+p+'Grid').innerHTML=S.grids.map(x=>`<option value="${esc(x.id)}" ${g&&x.id===g.id?'selected':''}>${esc(x.nom)}${x.activite?' · '+esc(x.activite):''}</option>`).join('')||'<option value="">Aucune grille</option>';
+ const cl=classes();if(!cl.includes(S.cur.classe))S.cur.classe=cl[0]||'';
+ $('#'+p+'Classe').innerHTML=cl.map(c=>`<option ${c===S.cur.classe?'selected':''} value="${esc(c)}">${esc(c||'Sans classe')} (${elevesDe(c).length})</option>`).join('')||'<option value="">—</option>';
+ if(!S.cur.date)S.cur.date=today();$('#'+p+'Date').value=S.cur.date;
+ const ds=g?datesOf(g):[];if(!ds.includes(S.cur.date))ds.unshift(S.cur.date);
+ $('#'+p+'Dates').innerHTML=ds.length>1||ds[0]!==today()?'<span class="mut" style="align-self:center">Séances :</span>'+ds.map(d=>`<button class="chip ${d===S.cur.date?'on':''}" data-date="${d}">${frD(d)}</button>`).join(''):'';
+ $('#'+p+'Dates').querySelectorAll('[data-date]').forEach(b=>b.onclick=()=>{S.cur.date=b.dataset.date;save();renderAll()})}
+['e','r'].forEach(p=>{
+ $('#'+p+'Grid').onchange=e=>{S.cur.gid=e.target.value;save();hydrate(curG());renderAll()};
+ $('#'+p+'Classe').onchange=e=>{S.cur.classe=e.target.value;S.cur.eid='';save();renderAll()};
+ $('#'+p+'Date').onchange=e=>{if(e.target.value){S.cur.date=e.target.value;save();renderAll()}}});
+
+/* ───── ÉVALUER ───── */
+function renderEval(){fillSelectors('e');const g=curG(),P=$('#ePanel');
+ const E=elevesDe(S.cur.classe);
+ if(!g){$('#eChips').innerHTML='';P.innerHTML='<p class="mut">Créez d\'abord une grille dans l\'onglet « Mes grilles ».</p>';return}
+ if(!L.length){$('#eChips').innerHTML='';P.innerHTML='<p class="mut">Chargez la liste des élèves pour commencer à évaluer.</p>';return}
+ if(!E.some(e=>e.id===S.cur.eid))S.cur.eid=E[0]?E[0].id:'';
+ $('#eChips').innerHTML=E.map(e=>{const st=etat(g,evOf(g.id,S.cur.date,e.id));return`<button class="chip ${e.id===S.cur.eid?'on':''}" data-eid="${esc(e.id)}"><i class="${st}"></i>${esc(e.nom.toUpperCase())} ${esc(e.prenom)}</button>`}).join('');
+ $('#eChips').querySelectorAll('[data-eid]').forEach(b=>b.onclick=()=>{S.cur.eid=b.dataset.eid;save();renderEval()});
+ const k=E.findIndex(e=>e.id===S.cur.eid),e=E[k];if(!e){P.innerHTML='<p class="mut">Aucun élève dans cette classe.</p>';return}
+ const ev=evOf(g.id,S.cur.date,e.id)||{c:[],st:'',com:''},r=score(g,ev),dis=!!ev.st,mx=maxTot(g);
+ const fin=E.filter(x=>etat(g,evOf(g.id,S.cur.date,x.id))).length;
+ P.innerHTML=`<div class="ehead"><button class="btn r" id="prev" ${k<=0?'disabled':''} title="Élève précédent">◀</button>
+  <div class="who"><b>${esc(e.nom.toUpperCase())}</b> ${esc(e.prenom)}<small>${esc(e.classe)} · ${k+1}/${E.length} · ${fin} évalué(s)</small></div>
+  <button class="btn r" id="next" ${k>=E.length-1?'disabled':''} title="Élève suivant">▶</button></div>
+ <div class="row" style="justify-content:center;margin-bottom:10px"><div class="seg" id="stat">${['','Absent','Dispensé'].map(s=>`<button data-st="${s}" class="${(ev.st||'')===s?'on':''}">${s||'Présent'}</button>`).join('')}</div></div>
+ <div class="tw ${dis?'dis':''}"><table class="g"><thead><tr><th style="background:transparent"></th>${g.niveaux.map(n=>`<th style="${lvVars(n)}">${esc(n.nom)}<small>${g.mode==='pct'?fmt(num(n.pct))+' %':''}</small></th>`).join('')}</tr></thead>
+ <tbody>${g.items.map((it,i)=>`<tr><th>${esc(it.nom)}<small>${fmt(maxItem(g,it))} pt${maxItem(g,it)>1?'s':''}</small></th>${g.niveaux.map((n,j)=>{const t=(it.ind||[])[j];
+  return`<td class="cl ${ev.c&&ev.c[i]===j?'on':''}" style="${lvVars(n)}" data-i="${i}" data-j="${j}">${t?esc(t):`<span class="e">${esc(n.nom)}</span>`}${g.mode==='pts'?`<br><small>${fmt(num((it.p||[])[j]))} pt</small>`:''}</td>`}).join('')}</tr>`).join('')}</tbody></table></div>
+ <div class="score">${dis?`<div class="big">${esc(ev.st)}</div>`:`<div class="big">${r.n?fmt(r.note):'–'} <small>/ ${fmt(r.sur)}</small></div><div>${fmt(r.s)} / ${fmt(mx)} pts · ${r.pct} %<br><span class="mut">${r.n}/${r.tot} compétence(s) évaluée(s)</span></div>`}</div>
+ <label class="f">Commentaire (facultatif)<textarea id="com" rows="2" placeholder="Observation, conseil…">${esc(ev.com||'')}</textarea></label>
+ <div class="row" style="margin-top:12px">
+  <button class="btn b" id="saveE">💾 Enregistrer dans Mes Apps EPS</button>
+  <button class="btn d sm" id="clrE">Effacer la saisie</button>
+  <label class="mut" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="auto" ${S.auto?'checked':''}> élève suivant quand la grille est complète</label>
+  <span class="msg ${stMsg.ok?'ok':'ko'}" data-status>${esc(stMsg.t)}</span></div>
+ <p class="hint">Cliquez sur la case du niveau atteint (un second clic l'annule). Chaque clic est enregistré automatiquement dans Mes Apps EPS.</p>`;
+ const upd=fn=>{const x=clone(evOf(g.id,S.cur.date,e.id)||{c:[],st:'',com:''});fn(x);evSet(g.id,S.cur.date,e.id,x);queue(g.id,S.cur.date,e.id)};
+ P.querySelectorAll('td.cl').forEach(td=>td.onclick=()=>{const i=+td.dataset.i,j=+td.dataset.j;let complete=false;
+  upd(x=>{x.c=x.c||[];x.c[i]=x.c[i]===j?null:j;complete=g.items.every((_,q)=>valid(g,x.c[q]))});
+  if(complete&&S.auto&&k<E.length-1){S.cur.eid=E[k+1].id;save()}renderEval()});
+ P.querySelectorAll('#stat button').forEach(b=>b.onclick=()=>{upd(x=>x.st=b.dataset.st);renderEval()});
+ $('#com').oninput=ev2=>upd(x=>x.com=ev2.target.value.trim());
+ $('#com').onchange=()=>renderEval();
+ $('#prev').onclick=()=>{S.cur.eid=E[k-1].id;save();renderEval()};
+ $('#next').onclick=()=>{S.cur.eid=E[k+1].id;save();renderEval()};
+ $('#auto').onchange=ev2=>{S.auto=ev2.target.checked;save()};
+ $('#saveE').onclick=async()=>{queue(g.id,S.cur.date,e.id);await flush()};
+ $('#clrE').onclick=()=>{if(!confirm('Effacer la saisie de cet élève pour cette date ?'))return;evSet(g.id,S.cur.date,e.id,{c:[],st:'',com:''});queue(g.id,S.cur.date,e.id);renderEval()}}
+
+/* ───── MES GRILLES ───── */
+let draft=null,draftOld=null;
+function renderList(){const H=$('#gList');
+ H.innerHTML=`<h2>Mes grilles d'évaluation</h2><div class="row" style="margin-bottom:12px">
+  <button class="btn" id="gNew">➕ Nouvelle grille</button>
+  <label class="btn r">📂 Importer une grille (.json)<input type="file" accept=".json,application/json" hidden id="gImp"></label>
+  <span class="msg" id="gMsg"></span></div>
+ <div class="gl">${S.grids.map(g=>{const n=Object.values(S.evals[g.id]||{}).reduce((s,d)=>s+Object.values(d).filter(x=>!isEmpty(x)).length,0);
+  return`<div class="gc"><h3>${esc(g.nom)}</h3><div class="mut">${g.activite?esc(g.activite)+' · ':''}${g.items.length} compétence(s) × ${g.niveaux.length} niveau(x)<br>Barème : ${g.mode==='pct'?'% du total':'points'} · ${fmt(maxTot(g))} pts → note sur ${fmt(num(g.sur)||maxTot(g))} · ${n} saisie(s)</div>
+  <div class="bar">${g.niveaux.map(x=>`<i style="background:${hexOk(x.couleur)}" title="${esc(x.nom)}"></i>`).join('')}</div>
+  <div class="row"><button class="btn b sm" data-a="eval" data-id="${g.id}">✅ Évaluer</button><button class="btn r sm" data-a="edit" data-id="${g.id}">✏️ Modifier</button><button class="btn r sm" data-a="dup" data-id="${g.id}">⧉ Dupliquer</button><button class="btn r sm" data-a="exp" data-id="${g.id}" title="Partager la grille (sans les résultats)">⤓ Exporter</button><button class="btn d sm" data-a="del" data-id="${g.id}">🗑</button></div></div>`}).join('')||'<p class="mut">Aucune grille.</p>'}</div>`;
+ $('#gNew').onclick=()=>{openEditor(newGrid(),true)};
+ $('#gImp').onchange=async ev=>{const f=ev.target.files[0];if(!f)return;const m=$('#gMsg');
+  try{const o=JSON.parse(await f.text());const arr=(Array.isArray(o)?o:[o.grille||o]).map(sanitize);
+   arr.forEach(g=>{g.id=uid();while(S.grids.some(x=>x.nom===g.nom))g.nom+=' (import)';S.grids.push(g)});save();renderList();m.className='msg ok';m.textContent=`✔ ${arr.length} grille(s) importée(s)`}
+  catch(e){m.className='msg ko';m.textContent='✖ Fichier de grille invalide'}};
+ H.querySelectorAll('[data-a]').forEach(b=>b.onclick=()=>{const g=G(b.dataset.id);if(!g)return;const a=b.dataset.a;
+  if(a==='eval'){S.cur.gid=g.id;save();$('.tabs [data-t=eval]').click()}
+  else if(a==='edit')openEditor(clone(g),false);
+  else if(a==='dup'){const c=clone(g);c.id=uid();c.nom=g.nom+' (copie)';S.grids.push(c);save();renderList()}
+  else if(a==='exp'){const blob=new Blob([JSON.stringify({app:'CompEval',version:1,grille:Object.assign(clone(g),{id:undefined})},null,1)],{type:'application/json'});
+   const u=URL.createObjectURL(blob),l=document.createElement('a');l.href=u;l.download='CompEval_grille_'+g.nom.replace(/[^\w\-]+/g,'_')+'.json';document.body.appendChild(l);l.click();l.remove();setTimeout(()=>URL.revokeObjectURL(u),3000)}
+  else if(a==='del'){if(!confirm(`Supprimer la grille « ${g.nom} » et ses saisies sur cet appareil ?\n(Les lignes déjà enregistrées dans Mes Apps EPS sont conservées.)`))return;
+   S.grids=S.grids.filter(x=>x!==g);delete S.evals[g.id];if(S.cur.gid===g.id)S.cur.gid='';save();$('#gEdit').hidden=true;renderList()}})}
+function sanitize(g){if(!g||!Array.isArray(g.niveaux)||!Array.isArray(g.items))throw new Error('format');
+ const n=g.niveaux.map(x=>({nom:String(x.nom||'Niveau'),couleur:hexOk(x.couleur),pct:num(x.pct),pts:num(x.pts)}));
+ return{id:uid(),nom:String(g.nom||'Grille importée'),activite:String(g.activite||''),mode:g.mode==='pts'?'pts':'pct',sur:num(g.sur),arrondi:num(g.arrondi),niveaux:n,
+  items:g.items.map(it=>({nom:String(it.nom||'Compétence'),pts:num(it.pts),ind:n.map((_,j)=>String((it.ind||[])[j]||'')),p:n.map((x,j)=>num((it.p||[])[j]??x.pts))}))}}
+
+function openEditor(g,isNew){draft=g;draftOld=isNew?null:G(g.id)?clone(G(g.id)):null;$('#gEdit').hidden=false;renderEditor();$('#gEdit').scrollIntoView({behavior:'smooth'})}
+const PAL=['#e53935','#fb8c00','#fdd835','#7cb342','#2e7d32','#1e88e5','#8e24aa','#6d4c41'];
+function resize(g,nI,nN){nI=Math.max(1,Math.min(30,nI));nN=Math.max(2,Math.min(8,nN));
+ while(g.niveaux.length<nN){const j=g.niveaux.length;g.niveaux.push({nom:'Niveau '+(j+1),couleur:PAL[j%PAL.length],pct:100,pts:num((g.niveaux[j-1]||{}).pts)+1})}
+ g.niveaux.length=nN;
+ while(g.items.length<nI)g.items.push({nom:'Compétence '+(g.items.length+1),pts:num((g.items[g.items.length-1]||{}).pts)||5,ind:[],p:[]});
+ g.items.length=nI;
+ g.items.forEach(it=>{it.ind=g.niveaux.map((_,j)=>(it.ind||[])[j]||'');it.p=g.niveaux.map((n,j)=>(it.p||[])[j]??n.pts)})}
+function renderEditor(){const g=draft,H=$('#gEdit');resize(g,g.items.length,g.niveaux.length);const pct=g.mode==='pct',mx=maxTot(g);
+ H.innerHTML=`<h2>${draftOld?'Modifier la grille':'Nouvelle grille'}</h2>
+ <div class="row" style="align-items:flex-end">
+  <label class="f" style="flex:2;min-width:220px">Nom de l'évaluation<input data-k="nom" value="${esc(g.nom)}"></label>
+  <label class="f" style="flex:1;min-width:160px">Activité / séquence<input data-k="activite" value="${esc(g.activite)}" placeholder="ex : Badminton"></label>
+ </div>
+ <div class="row" style="margin-top:12px;align-items:flex-end">
+  <label class="f">Compétences (lignes)<span class="cnt"><button data-c="i" data-d="-1">−</button><span>${g.items.length}</span><button data-c="i" data-d="1">+</button></span></label>
+  <label class="f">Niveaux (colonnes)<span class="cnt"><button data-c="n" data-d="-1">−</button><span>${g.niveaux.length}</span><button data-c="n" data-d="1">+</button></span></label>
+  <label class="f">Barème<span class="seg" id="mode"><button data-m="pct" class="${pct?'on':''}">% du total</button><button data-m="pts" class="${pct?'':'on'}">Points</button></span></label>
+  <label class="f">Note sur<input type="number" min="0" step="any" data-k="sur" data-n value="${esc(g.sur)}" title="0 = total des points"></label>
+  <label class="f">Arrondi<select data-k="arrondi" data-n>${[[0,'aucun'],[.1,'0,1'],[.25,'0,25'],[.5,'0,5'],[1,'1']].map(([v,t])=>`<option value="${v}" ${num(g.arrondi)===v?'selected':''}>${t}</option>`).join('')}</select></label>
+ </div>
+ <p class="hint">${pct?'Mode <b>% du total</b> : chaque compétence vaut un nombre de points ; chaque niveau rapporte un pourcentage de ces points.':'Mode <b>points</b> : chaque niveau rapporte un nombre de points (réglable pour toute la colonne dans l\'en-tête, puis ajustable case par case).'} Total : <b id="tot">${fmt(mx)}</b> pts → note sur <b id="sur">${fmt(num(g.sur)||mx)}</b>.</p>
+ <div class="tw" style="margin-top:8px"><table class="ed"><thead><tr><th class="it">Compétences / items évalués${pct?'<br><span class="mut" style="font-weight:600">et points de chaque ligne</span>':''}</th>
+ ${g.niveaux.map((n,j)=>`<th style="${lvVars(n)}"><input class="nm" data-p="niveaux.${j}.nom" value="${esc(n.nom)}" placeholder="Nom du niveau">
+  <div class="hv"><input type="color" data-p="niveaux.${j}.couleur" value="${hexOk(n.couleur)}" title="Couleur de la colonne">
+  ${pct?`<input type="number" step="any" min="0" max="100" data-p="niveaux.${j}.pct" data-n value="${esc(n.pct)}"> %`:`<input type="number" step="any" min="0" data-col="${j}" value="${esc(n.pts)}" title="Appliquer à toute la colonne"> pts`}</div></th>`).join('')}</tr></thead>
+ <tbody>${g.items.map((it,i)=>`<tr><td class="it"><textarea data-p="items.${i}.nom" rows="2" placeholder="Compétence / item">${esc(it.nom)}</textarea>${pct?`<div class="cp"><input type="number" step="any" min="0" data-p="items.${i}.pts" data-n value="${esc(it.pts)}"> pts</div>`:''}</td>
+  ${g.niveaux.map((n,j)=>`<td style="${lvVars(n)}"><textarea data-p="items.${i}.ind.${j}" placeholder="Indicateur de réussite…">${esc(it.ind[j])}</textarea>${pct?'':`<div class="cp"><input type="number" step="any" min="0" data-p="items.${i}.p.${j}" data-n value="${esc(it.p[j])}"> pts</div>`}</td>`).join('')}</tr>`).join('')}</tbody></table></div>
+ <div class="row" style="margin-top:14px"><button class="btn" id="gSave">✔ Enregistrer la grille</button><button class="btn r" id="gCancel">Annuler</button><span class="msg" id="eMsg"></span></div>`;
+ const recalc=()=>{const m=maxTot(g);$('#tot').textContent=fmt(m);$('#sur').textContent=fmt(num(g.sur)||m)};
+ const set=(path,v)=>{const ks=path.split('.');let o=g;for(let q=0;q<ks.length-1;q++)o=o[ks[q]];o[ks[ks.length-1]]=v};
+ H.querySelectorAll('[data-k]').forEach(x=>x.oninput=x.onchange=()=>{g[x.dataset.k]=x.hasAttribute('data-n')?num(x.value):x.value;recalc()});
+ H.querySelectorAll('[data-p]').forEach(x=>{x.oninput=()=>{set(x.dataset.p,x.hasAttribute('data-n')?num(x.value):x.value);recalc()};
+  if(x.type==='color')x.onchange=()=>{set(x.dataset.p,x.value);renderEditor()}});
+ H.querySelectorAll('[data-col]').forEach(x=>x.onchange=()=>{const j=+x.dataset.col,v=num(x.value);g.niveaux[j].pts=v;g.items.forEach(it=>it.p[j]=v);renderEditor()});
+ H.querySelectorAll('[data-c]').forEach(b=>b.onclick=()=>{const d=+b.dataset.d;
+  if(b.dataset.c==='i')resize(g,g.items.length+d,g.niveaux.length);else resize(g,g.items.length,g.niveaux.length+d);renderEditor()});
+ H.querySelectorAll('#mode button').forEach(b=>b.onclick=()=>{g.mode=b.dataset.m;renderEditor()});
+ $('#gCancel').onclick=()=>{draft=null;H.hidden=true};
+ $('#gSave').onclick=async()=>{const m=$('#eMsg');g.nom=g.nom.trim();
+  if(!g.nom){m.className='msg ko';m.textContent='Donnez un nom à la grille.';return}
+  if(S.grids.some(x=>x.id!==g.id&&x.nom===g.nom)){m.className='msg ko';m.textContent='Une autre grille porte déjà ce nom.';return}
+  if(g.niveaux.some(n=>!n.nom.trim())){m.className='msg ko';m.textContent='Chaque niveau doit avoir un nom.';return}
+  if(new Set(g.niveaux.map(n=>n.nom.trim())).size<g.niveaux.length){m.className='msg ko';m.textContent='Deux niveaux ont le même nom.';return}
+  const old=draftOld,i=S.grids.findIndex(x=>x.id===g.id);
+  // Saisies existantes : on retire les choix devenus hors grille (niveau ou ligne supprimés)
+  for(const d of Object.values(S.evals[g.id]||{}))for(const ev of Object.values(d)){ev.c=(ev.c||[]).slice(0,g.items.length).map(j=>valid(g,j)?j:null)}
+  if(i>=0)S.grids[i]=g;else S.grids.push(g);S.cur.gid=g.id;save();draft=null;H.hidden=true;renderList();
+  // Mise à jour des lignes déjà enregistrées dans Mes Apps EPS (renommage, barème, intitulés…)
+  if(old&&L.length){const jobs=jobsGrid(g);if(jobs.length){await flush(jobs,{[g.id]:old.nom!==g.nom?[old.nom]:[]});const gm=$('#gMsg');if(gm){gm.className='msg ok';gm.textContent=`✔ Grille enregistrée · ${jobs.length} saisie(s) mises à jour dans Mes Apps EPS`}return}}
+  const gm=$('#gMsg');if(gm){gm.className='msg ok';gm.textContent='✔ Grille enregistrée'}}}
+
+/* ───── RÉSULTATS ───── */
+function renderRes(){fillSelectors('r');const g=curG(),B=$('#rBody');
+ if(!g){B.innerHTML='<p class="mut">Aucune grille.</p>';return}
+ const E=elevesDe(S.cur.classe),D=S.cur.date;
+ if(!E.length){B.innerHTML='<p class="mut">Aucun élève dans cette classe.</p>';return}
+ const evs=E.map(e=>({e,ev:evOf(g.id,D,e.id)}));
+ const notes=evs.filter(x=>x.ev&&!x.ev.st&&score(g,x.ev).n).map(x=>score(g,x.ev).note);
+ const moy=notes.length?notes.reduce((a,b)=>a+b,0)/notes.length:null;
+ const dist=i=>g.niveaux.map((_,j)=>evs.filter(x=>x.ev&&!x.ev.st&&(x.ev.c||[])[i]===j).length);
+ B.innerHTML=`<h2>${esc(g.nom)} · ${esc(S.cur.classe||'Sans classe')} · ${frD(D)}</h2>
+ <div class="row" style="margin-bottom:10px"><span class="mut">${evs.filter(x=>etat(g,x.ev)).length}/${E.length} élève(s) évalué(s) · moyenne : <b style="color:var(--c3)">${moy==null?'–':fmt(moy)+' / '+fmt(score(g,{}).sur)}</b></span><span class="sp"></span>
+  <button class="btn b sm noprint" id="rSave">💾 Tout enregistrer dans Mes Apps EPS</button>
+  <button class="btn r sm noprint" id="rXlsx">📤 Exporter (.xlsx)</button>
+  <button class="btn r sm noprint" onclick="print()">🖨 Imprimer</button>
+  <span class="msg noprint ${stMsg.ok?'ok':'ko'}" data-status>${esc(stMsg.t)}</span></div>
+ <div class="tw"><table class="rs"><thead><tr><th>Élève</th>${g.items.map((it,i)=>`<th title="${esc(it.nom)}">${i+1}. ${esc(it.nom.length>28?it.nom.slice(0,26)+'…':it.nom)}</th>`).join('')}<th>Note /${fmt(score(g,{}).sur)}</th><th>%</th></tr></thead>
+ <tbody>${evs.map(({e,ev})=>{const r=score(g,ev);return`<tr><td><button class="nm" data-eid="${esc(e.id)}"><b>${esc(e.nom.toUpperCase())}</b> ${esc(e.prenom)}</button></td>
+  ${ev&&ev.st?`<td colspan="${g.items.length}" class="mut">${esc(ev.st)}</td><td class="mut">${ev.st==='Absent'?'Abs':'Disp'}</td><td></td>`:
+  g.items.map((_,i)=>{const j=ev&&ev.c?ev.c[i]:null;return valid(g,j)?`<td><span class="lv" style="background:${hexOk(g.niveaux[j].couleur)};color:${txtOn(g.niveaux[j].couleur)}" title="${esc(g.niveaux[j].nom)}">${j+1}</span></td>`:'<td class="mut">·</td>'}).join('')+`<td><b>${r.n?fmt(r.note):'–'}</b></td><td class="mut">${r.n?r.pct+' %':''}</td>`}</tr>`}).join('')}</tbody>
+ <tfoot><tr><td class="mut">Répartition</td>${g.items.map((_,i)=>{const d=dist(i),t=d.reduce((a,b)=>a+b,0);return`<td><div class="dist" title="${d.map((v,j)=>g.niveaux[j].nom+' : '+v).join('\n')}">${t?d.map((v,j)=>v?`<i style="flex:${v};background:${hexOk(g.niveaux[j].couleur)}"></i>`:'').join(''):''}</div></td>`}).join('')}<td colspan="2"></td></tr></tfoot></table></div>
+ <div class="leg">${g.niveaux.map((n,j)=>`<span><i style="background:${hexOk(n.couleur)}"></i>${j+1} = ${esc(n.nom)}</span>`).join('')}</div>`;
+ B.querySelectorAll('[data-eid]').forEach(b=>b.onclick=()=>{S.cur.eid=b.dataset.eid;save();$('.tabs [data-t=eval]').click()});
+ $('#rSave').onclick=async()=>{const n=await flush(jobsGrid(g,null,E.map(e=>e.id)));if(!n)status('Aucune saisie à enregistrer pour cette classe.',false)};
+ $('#rXlsx').onclick=async()=>{await flush(jobsGrid(g,null,E.map(e=>e.id)));
+  try{EPS.downloadXLSX(await EPS.exportXLSX({ids:E.map(e=>e.id),apps:[APP]}),`CompEval_${(S.cur.classe||'classe').replace(/[^\w\-]+/g,'_')}_${today()}.xlsx`)}
+  catch(e){status('✖ '+(e.message||e),false)}}}
+
+/* ───── Démarrage ───── */
+(async()=>{$('#ver').textContent=typeof APP_VERSION!=='undefined'?'v'+APP_VERSION:'';await loadEleves();
+ S.grids.forEach(hydrate);if(!S.cur.gid&&S.grids[0])S.cur.gid=S.grids[0].id;save();renderAll();
+ window.addEventListener('pagehide',()=>{if(pend.size)flush()});
+ document.addEventListener('visibilitychange',()=>{if(document.hidden&&pend.size)flush()});
+ if('serviceWorker'in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{})})();
+</script>
+</body>
+</html>
