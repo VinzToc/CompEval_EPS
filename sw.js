@@ -1,5 +1,5 @@
 importScripts('version.js');
-const V='compeval-v'+APP_VERSION,F=['./','index.html','version.js','eps-core.js','manifest.webmanifest','icons/icon-192.png','icons/icon-512.png'];
+const V='compeval-v'+APP_VERSION,F=['./','index.html','version.js','eps-core.js','manifest.webmanifest','icons/icon-192.png','icons/icon-512.png','icons/logo-CompEval.png'];
 const T=2500; // réseau trop lent → copie hors ligne
 const net=r=>new Promise((ok,ko)=>{const t=setTimeout(()=>ko(new Error('timeout')),T);fetch(r,{cache:'no-cache'}).then(x=>{clearTimeout(t);ok(x)},e=>{clearTimeout(t);ko(e)})});
 self.addEventListener('install',e=>{e.waitUntil(caches.open(V).then(c=>Promise.all(F.map(u=>fetch(u,{cache:'reload'}).then(r=>r.ok&&c.put(u,r)).catch(()=>{})))));self.skipWaiting()});

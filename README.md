@@ -4,6 +4,8 @@ Application de l'ensemble **Mes Apps EPS** : créer ses propres grilles d'évalu
 
 Adresse : https://vinztoc.github.io/CompEval_EPS/
 
+Thème : couleurs du logo (bleu roi `#025198`, bleu nuit `#012953`, orange `#fc8e01`, doré `#f5bd22`, cyan `#67d8fd`).
+
 ## Fonctionnement
 1. **Mes grilles** : créer une grille en choisissant le nombre de **compétences** (lignes) et de **niveaux** (colonnes), puis saisir les indicateurs de réussite dans chaque case.
    - Couleur de chaque colonne (niveau).

@@ -5,49 +5,51 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>CompEval – Évaluer par compétences en EPS</title>
 <meta name="description" content="Grilles d'évaluation par compétences paramétrables, intégrées à Mes Apps EPS">
-<meta name="theme-color" content="#0a1428">
+<meta name="theme-color" content="#012953">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icons/icon-192.png">
-<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-512.png">
 <style>
-:root{--bg:#0a1428;--tx:#eef3ff;--mut:rgba(238,243,255,.62);--glass:rgba(255,255,255,.07);--bd:rgba(255,255,255,.15);--c1:#ff8a1f;--c2:#2f9bff;--c3:#ffd27a;--g1:rgba(255,138,31,.20);--g2:rgba(47,155,255,.22);--ok:#6ff0a0;--ko:#ff8f8f}
+:root{--bg:#012042;--tx:#f2f7ff;--mut:rgba(226,238,255,.68);--glass:rgba(255,255,255,.075);--bd:rgba(147,214,255,.22);--c1:#fc8e01;--c2:#1e88e5;--c3:#f5bd22;--cy:#67d8fd;--blue:#025198;--navy:#012953;--g1:rgba(252,142,1,.22);--g2:rgba(103,216,253,.20);--ok:#7ee08a;--ko:#ff8f8f}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}[hidden]{display:none!important}
-body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--tx);min-height:100vh;background:var(--bg);padding-bottom:60px;line-height:1.45}
-body::before{content:'';position:fixed;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(ellipse at 8% 4%,var(--g1),transparent 55%),radial-gradient(ellipse at 94% 96%,var(--g2),transparent 55%)}
+body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--tx);min-height:100vh;background:linear-gradient(165deg,#025198 0%,#012953 42%,#012042 100%) fixed var(--bg);padding-bottom:60px;line-height:1.45}
+body::before{content:'';position:fixed;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(ellipse at 100% 0%,var(--g1),transparent 45%),radial-gradient(ellipse at 0% 100%,var(--g2),transparent 50%)}
 header{display:flex;align-items:center;gap:14px;padding:18px 16px 10px;max-width:1200px;margin:auto}
-header img{width:62px;height:62px;flex:none;border-radius:50%;box-shadow:0 0 26px rgba(47,155,255,.45)}
+header img{width:64px;height:64px;flex:none;border-radius:22%;box-shadow:0 0 24px rgba(103,216,253,.45),0 0 0 2px rgba(255,255,255,.25)}
+header{position:relative}header::after{content:'';position:absolute;left:16px;right:16px;bottom:0;height:3px;border-radius:3px;background:linear-gradient(90deg,transparent,var(--c1) 20%,var(--c3) 60%,transparent)}
 header .t{flex:1;min-width:0}
-h1{margin:0;font-size:1.6rem;font-weight:900;letter-spacing:.07em;text-transform:uppercase;line-height:1.1;background:linear-gradient(90deg,var(--c1),var(--c3));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+h1{margin:0;font-size:1.9rem;font-weight:900;font-style:italic;letter-spacing:.01em;line-height:1.05;color:#fff;text-shadow:0 2px 0 #012042,0 4px 14px #0008}
+h1 span{color:var(--c1);background:linear-gradient(180deg,#ffd04a,var(--c1) 70%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;text-shadow:none;filter:drop-shadow(0 2px 0 #012042)}
 header p{margin:3px 0 0;font-size:.7rem;font-weight:600;color:var(--mut);letter-spacing:.1em;text-transform:uppercase}
 main{max-width:1200px;margin:auto;padding:0 12px}
 .card{background:var(--glass);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid var(--bd);border-radius:18px;padding:16px;margin-bottom:14px;box-shadow:0 10px 30px #0006,inset 0 1px 0 #ffffff18}
 h2{margin:0 0 12px;font-size:.82rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--c1)}
 h3{margin:0 0 6px;font-size:1rem}
-.btn{border:0;border-radius:12px;padding:10px 16px;font:inherit;font-weight:800;font-size:.88rem;color:#fff;cursor:pointer;background:linear-gradient(135deg,#ffa21f,#ff5e00);box-shadow:0 6px 18px #ff5e0040,inset 0 1px 0 #ffffff55;text-shadow:0 1px 2px #0003;display:inline-flex;align-items:center;gap:6px;text-decoration:none;transition:transform .12s,filter .15s;white-space:nowrap}
+.btn{border:0;border-radius:12px;padding:10px 16px;font:inherit;font-weight:800;font-size:.88rem;color:#fff;cursor:pointer;background:linear-gradient(135deg,#f5bd22,#fc8e01 55%,#f07000);box-shadow:0 6px 18px #fc8e0145,inset 0 1px 0 #ffffff55;text-shadow:0 1px 2px #0003;display:inline-flex;align-items:center;gap:6px;text-decoration:none;transition:transform .12s,filter .15s;white-space:nowrap}
 .btn:hover{filter:brightness(1.1)}.btn:active{transform:scale(.97)}.btn:disabled{opacity:.4;cursor:default}
-.btn.b{background:linear-gradient(135deg,#2f9bff,#0a4fd0);box-shadow:0 6px 18px #0a4fd045,inset 0 1px 0 #ffffff55}
+.btn.b{background:linear-gradient(135deg,#29a6f0,#025198);box-shadow:0 6px 18px #02519866,inset 0 1px 0 #ffffff55}
 .btn.r{background:rgba(255,255,255,.1);border:1.5px solid var(--bd);box-shadow:none;text-shadow:none}
 .btn.d{background:rgba(255,80,80,.16);border:1.5px solid rgba(255,120,120,.4);box-shadow:none;text-shadow:none}
 .btn.sm{padding:6px 11px;font-size:.8rem;border-radius:10px}
 .row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
 .sp{flex:1}
 label.f{display:flex;flex-direction:column;gap:4px;font-size:.74rem;font-weight:700;color:var(--mut);text-transform:uppercase;letter-spacing:.05em}
-input,select,textarea{font:inherit;color:var(--tx);background:rgba(0,0,0,.28);border:1.5px solid var(--bd);border-radius:10px;padding:8px 10px;min-width:0}
-input:focus,select:focus,textarea:focus{outline:none;border-color:var(--c2)}
-select option{background:#13213d}
+input,select,textarea{font:inherit;color:var(--tx);background:rgba(1,32,66,.55);border:1.5px solid var(--bd);border-radius:10px;padding:8px 10px;min-width:0}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--cy)}
+select option{background:#012953}
 textarea{resize:vertical}
 input[type=color]{padding:0;width:38px;height:32px;border-radius:8px;cursor:pointer;flex:none}
 input[type=number]{width:78px}
-.tabs{display:flex;gap:6px;max-width:1200px;margin:0 auto 12px;padding:0 12px;position:sticky;top:0;z-index:5;padding-top:6px;padding-bottom:6px;background:linear-gradient(var(--bg) 70%,transparent)}
+.tabs{display:flex;gap:6px;max-width:1200px;margin:0 auto 12px;padding:0 12px;position:sticky;top:0;z-index:5;padding-top:6px;padding-bottom:6px;background:rgba(1,41,83,.35);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-radius:0 0 16px 16px}
 .tabs button{flex:1;border:1.5px solid var(--bd);background:var(--glass);color:var(--tx);font:inherit;font-weight:800;font-size:.9rem;padding:10px 6px;border-radius:12px;cursor:pointer}
-.tabs button.on{background:linear-gradient(135deg,#2f9bff,#0a4fd0);border-color:transparent}
+.tabs button.on{background:linear-gradient(135deg,#1e88e5,#025198);border-color:var(--cy);box-shadow:0 0 14px rgba(103,216,253,.35)}
 .msg{font-size:.85rem;font-weight:700}.msg.ok{color:var(--ok)}.msg.ko{color:var(--ko)}
 .mut{color:var(--mut);font-size:.85rem}
 .tw{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:12px}
 /* Chips élèves */
 .chips{display:flex;flex-wrap:wrap;gap:6px;max-height:190px;overflow:auto;padding:2px}
 .chip{border:1.5px solid var(--bd);background:rgba(255,255,255,.06);color:var(--tx);font:inherit;font-size:.82rem;padding:5px 10px;border-radius:999px;cursor:pointer;display:inline-flex;gap:5px;align-items:center}
-.chip.on{border-color:var(--c1);background:rgba(255,138,31,.22)}
+.chip.on{border-color:var(--c1);background:rgba(252,142,1,.24)}
 .chip i{font-style:normal;width:9px;height:9px;border-radius:50%;background:rgba(255,255,255,.18);flex:none}
 .chip i.p{background:var(--c3)}.chip i.c{background:var(--ok)}.chip i.a{background:#9aa6c4}
 /* Grille d'évaluation */
@@ -58,7 +60,7 @@ table.g{border-collapse:separate;border-spacing:5px;width:100%;min-width:560px}
 table.g th,table.g td{vertical-align:middle}
 table.g thead th{font-size:.82rem;padding:8px 6px;border-radius:10px;background:var(--lc);color:var(--lt);text-align:center}
 table.g thead th small{display:block;font-weight:600;opacity:.85}
-table.g tbody th{text-align:left;font-size:.9rem;padding:8px 10px;background:#1b2843;border-radius:10px;width:22%;min-width:140px;position:sticky;left:0;z-index:2;box-shadow:6px 0 10px -6px #0009}
+table.g tbody th{text-align:left;font-size:.9rem;padding:8px 10px;background:#0b3a73;border-radius:10px;width:22%;min-width:140px;position:sticky;left:0;z-index:2;box-shadow:6px 0 10px -6px #0009}
 table.g tbody th small{display:block;color:var(--mut);font-weight:600}
 td.cl{background:var(--lt2);border:2px solid transparent;border-radius:10px;padding:10px 8px;font-size:.84rem;cursor:pointer;text-align:center;transition:transform .1s,background .15s;user-select:none;position:relative;min-height:54px}
 td.cl:hover{border-color:var(--lc)}
@@ -70,8 +72,8 @@ td.cl.on .e{opacity:.9}
 .dis td.cl{opacity:.35;pointer-events:none}
 .seg{display:inline-flex;border:1.5px solid var(--bd);border-radius:11px;overflow:hidden}
 .seg button{border:0;background:transparent;color:var(--tx);font:inherit;font-size:.82rem;font-weight:700;padding:7px 12px;cursor:pointer}
-.seg button.on{background:var(--c2)}
-.score{display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:center;padding:12px;border-radius:14px;background:rgba(0,0,0,.25);margin:12px 0}
+.seg button.on{background:linear-gradient(135deg,#1e88e5,#025198);box-shadow:inset 0 0 0 1.5px var(--cy)}
+.score{display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:center;padding:12px;border-radius:14px;background:rgba(1,32,66,.55);border:1px solid var(--bd);margin:12px 0}
 .score .big{font-size:2rem;font-weight:900;color:var(--c3)}
 .score .big small{font-size:1rem;color:var(--mut)}
 /* Éditeur */
@@ -119,7 +121,7 @@ footer{max-width:1200px;margin:10px auto;padding:0 16px;font-size:.74rem;color:v
 <body>
 <header>
  <img src="icons/icon-192.png" alt="">
- <div class="t"><h1>CompEval</h1><p>Évaluer par compétences · Mes Apps EPS</p></div>
+ <div class="t"><h1>Comp<span>Eval</span></h1><p>Évaluer par compétences · Mes Apps EPS</p></div>
  <a class="btn r sm" href="https://vinztoc.github.io/Mes_Apps_EPS/" title="Retour au portail Mes Apps EPS">🏠 Portail</a>
 </header>
 
@@ -198,7 +200,7 @@ const cmpFr=(a,b)=>String(a).localeCompare(String(b),'fr',{numeric:true});
  grille : {id, nom, activite, mode:'pct'|'pts', sur, arrondi,
            niveaux:[{nom, couleur, pct, pts}],
            items:[{nom, pts (mode %), ind:[texte par niveau], p:[points par niveau (mode points)]}]} */
-const LV=[['Maîtrise insuffisante','#e53935',0,0],['Maîtrise fragile','#fb8c00',33,2],['Maîtrise satisfaisante','#7cb342',67,3.5],['Très bonne maîtrise','#2e7d32',100,5]];
+const LV=[['Maîtrise insuffisante','#e8262b',0,0],['Maîtrise fragile','#ffa000',33,2],['Maîtrise satisfaisante','#76c442',67,3.5],['Très bonne maîtrise','#108a2c',100,5]];
 function newGrid(nbI=4,nbN=4){const niv=LV.slice(0,nbN).map(([nom,couleur,pct,pts])=>({nom,couleur,pct,pts}));
  return{id:uid(),nom:'Nouvelle évaluation',activite:'',mode:'pct',sur:20,arrondi:.5,niveaux:niv,
   items:Array.from({length:nbI},(_,i)=>({nom:'Compétence '+(i+1),pts:5,ind:niv.map(()=>''),p:niv.map(n=>n.pts)}))}}
@@ -363,7 +365,7 @@ function sanitize(g){if(!g||!Array.isArray(g.niveaux)||!Array.isArray(g.items))t
   items:g.items.map(it=>({nom:String(it.nom||'Compétence'),pts:num(it.pts),ind:n.map((_,j)=>String((it.ind||[])[j]||'')),p:n.map((x,j)=>num((it.p||[])[j]??x.pts))}))}}
 
 function openEditor(g,isNew){draft=g;draftOld=isNew?null:G(g.id)?clone(G(g.id)):null;$('#gEdit').hidden=false;renderEditor();$('#gEdit').scrollIntoView({behavior:'smooth'})}
-const PAL=['#e53935','#fb8c00','#fdd835','#7cb342','#2e7d32','#1e88e5','#8e24aa','#6d4c41'];
+const PAL=['#e8262b','#ffa000','#f5bd22','#76c442','#108a2c','#1e88e5','#67d8fd','#8e24aa'];
 function resize(g,nI,nN){nI=Math.max(1,Math.min(30,nI));nN=Math.max(2,Math.min(8,nN));
  while(g.niveaux.length<nN){const j=g.niveaux.length;g.niveaux.push({nom:'Niveau '+(j+1),couleur:PAL[j%PAL.length],pct:100,pts:num((g.niveaux[j-1]||{}).pts)+1})}
  g.niveaux.length=nN;
