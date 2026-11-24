@@ -1,5 +1,14 @@
 [
  {
+  "v": "1.2.0",
+  "date": "2026-11-24",
+  "items": [
+   "Groupes d'enseignement : comme dans le portail Mes Apps EPS, un élève garde sa classe et peut appartenir en plus à un ou plusieurs groupes. Un groupe réunit de nouveau tous ses élèves.",
+   "La liste sépare « Classes » et « Groupes d'enseignement » ; une classe dont tous les élèves sont suivis dans des groupes n'est plus proposée seule.",
+   "Module commun eps-core mis à jour (v2.5)."
+  ]
+ },
+ {
   "v": "1.1.1",
   "date": "2026-11-23",
   "items": [

@@ -270,8 +270,15 @@ function status(t,ok){stMsg={t,ok};document.querySelectorAll('[data-status]').fo
 function jobsGrid(g,date,ids){const out=[];const E=S.evals[g.id]||{};for(const d of Object.keys(E)){if(date&&d!==date)continue;for(const eid of Object.keys(E[d]))if(!ids||ids.includes(eid))out.push({gid:g.id,date:d,eid})}return out}
 
 /* ───── Élèves ───── */
-const classes=()=>[...new Set(L.map(e=>e.classe||''))].sort(cmpFr);
-const elevesDe=c=>L.filter(e=>(e.classe||'')===c).sort((a,b)=>cmpFr(a.nom+' '+a.prenom,b.nom+' '+b.prenom));
+/* Groupes d'enseignement (eps-core v2.5) : l'élève garde sa classe et peut appartenir en plus à un ou plusieurs groupes.
+   Un groupe se choisit comme une classe et réunit ses élèves venus de plusieurs classes.
+   Une classe dont tous les élèves sont suivis dans des groupes n'est pas proposée seule : tout se fait dans le groupe. */
+const grpOf=e=>(Array.isArray(e.groupes)?e.groupes:String(e.groupes??'').split('|')).map(x=>String(x).trim()).filter(Boolean);
+const groupes=()=>[...new Set(L.flatMap(grpOf))].sort(cmpFr);
+function depCls(){const G=new Set(L.flatMap(grpOf)),by=new Map();L.forEach(e=>{const c=e.classe||'';const x=by.get(c)||{n:0,g:0};x.n++;if(grpOf(e).length)x.g++;by.set(c,x)});
+ return new Set([...by].filter(([c,x])=>c&&x.g===x.n&&!G.has(c)).map(([c])=>c))}
+const classes=()=>{const D=depCls();return[...new Set([...L.map(e=>e.classe||'').filter(c=>!D.has(c)),...L.flatMap(grpOf)])].sort(cmpFr)};
+const elevesDe=c=>L.filter(e=>(e.classe||'')===c||grpOf(e).includes(c)).sort((a,b)=>cmpFr(a.nom+' '+a.prenom,b.nom+' '+b.prenom));
 async function loadEleves(){try{L=await EPS.all()}catch(e){L=[]}$('#noList').hidden=L.length>0}
 document.addEventListener('change',async ev=>{const inp=ev.target;if(!inp.matches('[data-load]')||!inp.files[0])return;
  const m=$('#loadMsg');try{const r=await EPS.importFile(inp.files[0]);await loadEleves();S.grids.forEach(hydrate);m.className='msg ok';m.textContent=`✔ ${L.length} élève(s) disponibles`+(r&&r.add?` (${r.add} ajouté(s))`:'');renderAll()}
@@ -286,7 +293,8 @@ function renderAll(){if(tab==='eval')renderEval();else if(tab==='grilles')render
 function fillSelectors(p){const g=curG();
  $('#'+p+'Grid').innerHTML=S.grids.map(x=>`<option value="${esc(x.id)}" ${g&&x.id===g.id?'selected':''}>${esc(x.nom)}${x.activite?' · '+esc(x.activite):''}</option>`).join('')||'<option value="">Aucune grille</option>';
  const cl=classes();if(!cl.includes(S.cur.classe))S.cur.classe=cl[0]||'';
- $('#'+p+'Classe').innerHTML=cl.map(c=>`<option ${c===S.cur.classe?'selected':''} value="${esc(c)}">${esc(c||'Sans classe')} (${elevesDe(c).length})</option>`).join('')||'<option value="">—</option>';
+ {const G=groupes(),opt=c=>`<option ${c===S.cur.classe?'selected':''} value="${esc(c)}">${esc(c||'Sans classe')} (${elevesDe(c).length})</option>`;
+  $('#'+p+'Classe').innerHTML=(G.length?`<optgroup label="Classes">${cl.filter(c=>!G.includes(c)).map(opt).join('')}</optgroup><optgroup label="Groupes d'enseignement">${G.map(opt).join('')}</optgroup>`:cl.map(opt).join(''))||'<option value="">—</option>'}
  if(!S.cur.date)S.cur.date=today();$('#'+p+'Date').value=S.cur.date;
  const ds=g?datesOf(g):[];if(!ds.includes(S.cur.date))ds.unshift(S.cur.date);
  $('#'+p+'Dates').innerHTML=ds.length>1||ds[0]!==today()?'<span class="mut" style="align-self:center">Séances :</span>'+ds.map(d=>`<button class="chip ${d===S.cur.date?'on':''}" data-date="${d}">${frD(d)}</button>`).join(''):'';
