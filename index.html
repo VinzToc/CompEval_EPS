@@ -532,9 +532,16 @@ function spTransfer(SP0,o,g,D,ids){const SP=spRead()||SP0,K=SP.classes[o.cl],c=(
   r[col.id]={c:g.items.map((_,i)=>valid(g,(ev.c||[])[i])?ev.c[i]:null),com:ev.com||''};n++}
  localStorage.setItem(SP_KEY,JSON.stringify(SP));return{n,st,nouv,cree}}
 
+/* ───── Évaluations reçues de SuiviProf EPS (saisies dans une colonne « Grille CompEval » du carnet) ─────
+   SuiviProf les écrit directement dans le stockage de CompEval et les liste dans S.pendEPS : on les enregistre dans Mes Apps EPS. */
+async function pendSP(){const P=Array.isArray(S.pendEPS)?S.pendEPS:[];if(!P.length||!L.length)return;
+ S.pendEPS=[];save();const n=await flush(P.filter(p=>G(p.gid)));if(n)status(`✔ ${P.length} évaluation(s) reçue(s) de SuiviProf enregistrée(s) dans Mes Apps EPS`,true)}
+window.addEventListener('storage',ev=>{if(ev.key!==KEY||!ev.newValue)return;
+ try{const j=JSON.parse(ev.newValue);if(j&&Array.isArray(j.grids)){S=Object.assign({evals:{},cur:{},auto:false},j);if(tab!=='grilles'||!draft)renderAll();pendSP()}}catch(e){}});
+
 /* ───── Démarrage ───── */
 (async()=>{$('#ver').textContent=typeof APP_VERSION!=='undefined'?'v'+APP_VERSION:'';await loadEleves();
- S.grids.forEach(hydrate);if(!S.cur.gid&&S.grids[0])S.cur.gid=S.grids[0].id;save();renderAll();
+ S.grids.forEach(hydrate);if(!S.cur.gid&&S.grids[0])S.cur.gid=S.grids[0].id;save();renderAll();pendSP();
  window.addEventListener('pagehide',()=>{if(pend.size)flush()});
  document.addEventListener('visibilitychange',()=>{if(document.hidden&&pend.size)flush()});
  if('serviceWorker'in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{})})();

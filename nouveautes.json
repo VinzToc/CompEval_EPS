@@ -1,5 +1,16 @@
 [
  {
+  "v": "1.4.0",
+  "date": "2026-11-24",
+  "titre": "Évaluations reçues de SuiviProf EPS",
+  "items": [
+   "Une évaluation saisie dans SuiviProf EPS avec une colonne « Grille CompEval » est désormais recopiée automatiquement dans CompEval, à la date de la séance, dès l'enregistrement (chaque appui).",
+   "Si la grille utilisée dans SuiviProf n'existe pas encore dans CompEval, elle y est ajoutée.",
+   "Ces évaluations sont ensuite enregistrées dans Mes Apps EPS : immédiatement si CompEval est ouvert dans un autre onglet, sinon à sa prochaine ouverture.",
+   "Effacer une évaluation dans SuiviProf l'efface aussi dans CompEval."
+  ]
+ },
+ {
   "v": "1.3.0",
   "date": "2026-11-24",
   "titre": "Transfert vers SuiviProf EPS",
