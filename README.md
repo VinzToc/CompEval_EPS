@@ -15,7 +15,9 @@ Thème : couleurs du logo (bleu roi `#025198`, bleu nuit `#012953`, orange `#fc8
    - Note ramenée sur une valeur choisie (ex. /20) et arrondi (0,1 · 0,25 · 0,5 · 1).
    - Dupliquer, exporter / importer une grille (.json) pour la partager avec des collègues.
 2. **Évaluer** : choisir la grille, la classe et la date, puis cliquer sur la case du niveau atteint par l'élève (un second clic annule). Statut Présent / Absent / Dispensé, commentaire facultatif, navigation élève précédent / suivant.
-3. **Résultats** : tableau de la classe (niveau par compétence, note, %), répartition des niveaux par compétence, moyenne, export .xlsx et impression.
+3. **Transfert vers SuiviProf EPS** : bouton « ➡️ Transférer vers SuiviProf » ; les évaluations de la classe/du groupe à la date choisie sont écrites dans la séance de même date du carnet SuiviProf (même navigateur, même adresse vinztoc.github.io), dans une colonne « Grille CompEval ». Absents/dispensés → colonnes Appel/Dispense si vides. Séance créée si un cycle couvre la date.
+4. **Supprimer une séance** : bouton « 🗑 Supprimer la séance » sous les dates ; efface les évaluations de la séance dans CompEval et dans Mes Apps EPS.
+5. **Résultats** : tableau de la classe (niveau par compétence, note, %), répartition des niveaux par compétence, moyenne, export .xlsx et impression.
 
 ## Intégration à Mes Apps EPS (eps-core.js v2.4)
 - Identifiant d'application : `compeval`.

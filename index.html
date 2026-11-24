@@ -113,6 +113,14 @@ table.rs button.nm:hover{text-decoration:underline}
 .leg i{width:12px;height:12px;border-radius:3px;display:inline-block}
 .dates{display:flex;flex-wrap:wrap;gap:6px}
 .hint{font-size:.8rem;color:var(--mut);margin-top:6px}
+dialog.dlg{border:1px solid var(--bd);border-radius:18px;background:#012953;color:var(--tx);padding:18px;max-width:min(560px,94vw);width:100%;box-shadow:0 20px 60px #000a}
+dialog.dlg::backdrop{background:rgba(1,20,45,.7);backdrop-filter:blur(3px)}
+dialog.dlg h3{margin:0 0 10px;font-size:1.1rem}
+.opt{display:flex;gap:10px;align-items:flex-start;border:1.5px solid var(--bd);border-radius:12px;padding:10px;margin:6px 0;cursor:pointer;background:rgba(255,255,255,.04)}
+.opt:has(input:checked){border-color:var(--cy);background:rgba(103,216,253,.1)}
+.opt input{margin-top:4px}
+.opt small{display:block;color:var(--mut)}
+.chip.del{border-color:rgba(255,120,120,.45);color:#ffb3b3}
 footer{max-width:1200px;margin:10px auto;padding:0 16px;font-size:.74rem;color:var(--mut);text-align:center}
 @media (max-width:640px){h1{font-size:1.3rem}header img{width:48px;height:48px}.tabs button{font-size:.8rem}table.g tbody th{min-width:110px;font-size:.8rem}td.cl{font-size:.78rem;min-width:110px}}
 @media print{body{background:#fff;color:#000;padding:0}body::before,header .btn,.tabs,.noprint,footer{display:none!important}.card{box-shadow:none;border:1px solid #ccc;background:#fff;backdrop-filter:none}h1{-webkit-text-fill-color:#000}table.rs th,table.rs td{border-color:#ccc}.mut,table.rs thead th{color:#444}}
@@ -297,8 +305,11 @@ function fillSelectors(p){const g=curG();
   $('#'+p+'Classe').innerHTML=(G.length?`<optgroup label="Classes">${cl.filter(c=>!G.includes(c)).map(opt).join('')}</optgroup><optgroup label="Groupes d'enseignement">${G.map(opt).join('')}</optgroup>`:cl.map(opt).join(''))||'<option value="">—</option>'}
  if(!S.cur.date)S.cur.date=today();$('#'+p+'Date').value=S.cur.date;
  const ds=g?datesOf(g):[];if(!ds.includes(S.cur.date))ds.unshift(S.cur.date);
- $('#'+p+'Dates').innerHTML=ds.length>1||ds[0]!==today()?'<span class="mut" style="align-self:center">Séances :</span>'+ds.map(d=>`<button class="chip ${d===S.cur.date?'on':''}" data-date="${d}">${frD(d)}</button>`).join(''):'';
- $('#'+p+'Dates').querySelectorAll('[data-date]').forEach(b=>b.onclick=()=>{S.cur.date=b.dataset.date;save();renderAll()})}
+ const nS=g?nSeance(g,S.cur.date):0;
+ $('#'+p+'Dates').innerHTML=(ds.length>1||ds[0]!==today()?'<span class="mut" style="align-self:center">Séances :</span>'+ds.map(d=>`<button class="chip ${d===S.cur.date?'on':''}" data-date="${d}">${frD(d)}</button>`).join(''):'')
+  +(nS?`<button class="chip del" data-delseance title="Effacer les ${nS} évaluation(s) de cette séance (${esc(S.cur.classe)}, ${frD(S.cur.date)})">🗑 Supprimer la séance du ${frD(S.cur.date)}</button>`:'');
+ $('#'+p+'Dates').querySelectorAll('[data-date]').forEach(b=>b.onclick=()=>{S.cur.date=b.dataset.date;save();renderAll()});
+ const bd=$('#'+p+'Dates').querySelector('[data-delseance]');if(bd)bd.onclick=delSeance}
 ['e','r'].forEach(p=>{
  $('#'+p+'Grid').onchange=e=>{S.cur.gid=e.target.value;save();hydrate(curG());renderAll()};
  $('#'+p+'Classe').onchange=e=>{S.cur.classe=e.target.value;S.cur.eid='';save();renderAll()};
@@ -326,6 +337,7 @@ function renderEval(){fillSelectors('e');const g=curG(),P=$('#ePanel');
  <label class="f">Commentaire (facultatif)<textarea id="com" rows="2" placeholder="Observation, conseil…">${esc(ev.com||'')}</textarea></label>
  <div class="row" style="margin-top:12px">
   <button class="btn b" id="saveE">💾 Enregistrer dans Mes Apps EPS</button>
+  <button class="btn r sm" id="spE" title="Reporter les évaluations de la classe à cette date dans la séance correspondante de SuiviProf EPS">➡️ Transférer vers SuiviProf</button>
   <button class="btn d sm" id="clrE">Effacer la saisie</button>
   <label class="mut" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="auto" ${S.auto?'checked':''}> élève suivant quand la grille est complète</label>
   <span class="msg ${stMsg.ok?'ok':'ko'}" data-status>${esc(stMsg.t)}</span></div>
@@ -341,6 +353,7 @@ function renderEval(){fillSelectors('e');const g=curG(),P=$('#ePanel');
  $('#next').onclick=()=>{S.cur.eid=E[k+1].id;save();renderEval()};
  $('#auto').onchange=ev2=>{S.auto=ev2.target.checked;save()};
  $('#saveE').onclick=async()=>{queue(g.id,S.cur.date,e.id);await flush()};
+ $('#spE').onclick=spDialog;
  $('#clrE').onclick=()=>{if(!confirm('Effacer la saisie de cet élève pour cette date ?'))return;evSet(g.id,S.cur.date,e.id,{c:[],st:'',com:''});queue(g.id,S.cur.date,e.id);renderEval()}}
 
 /* ───── MES GRILLES ───── */
@@ -436,6 +449,7 @@ function renderRes(){fillSelectors('r');const g=curG(),B=$('#rBody');
  B.innerHTML=`<h2>${esc(g.nom)} · ${esc(S.cur.classe||'Sans classe')} · ${frD(D)}</h2>
  <div class="row" style="margin-bottom:10px"><span class="mut">${evs.filter(x=>etat(g,x.ev)).length}/${E.length} élève(s) évalué(s) · moyenne : <b style="color:var(--c3)">${moy==null?'–':fmt(moy)+' / '+fmt(score(g,{}).sur)}</b></span><span class="sp"></span>
   <button class="btn b sm noprint" id="rSave">💾 Tout enregistrer dans Mes Apps EPS</button>
+  <button class="btn b sm noprint" id="rSP" title="Reporter ces évaluations dans la séance correspondante de SuiviProf EPS">➡️ Transférer vers SuiviProf</button>
   <button class="btn r sm noprint" id="rXlsx">📤 Exporter (.xlsx)</button>
   <button class="btn r sm noprint" onclick="print()">🖨 Imprimer</button>
   <span class="msg noprint ${stMsg.ok?'ok':'ko'}" data-status>${esc(stMsg.t)}</span></div>
@@ -447,9 +461,76 @@ function renderRes(){fillSelectors('r');const g=curG(),B=$('#rBody');
  <div class="leg">${g.niveaux.map((n,j)=>`<span><i style="background:${hexOk(n.couleur)}"></i>${j+1} = ${esc(n.nom)}</span>`).join('')}</div>`;
  B.querySelectorAll('[data-eid]').forEach(b=>b.onclick=()=>{S.cur.eid=b.dataset.eid;save();$('.tabs [data-t=eval]').click()});
  $('#rSave').onclick=async()=>{const n=await flush(jobsGrid(g,null,E.map(e=>e.id)));if(!n)status('Aucune saisie à enregistrer pour cette classe.',false)};
+ $('#rSP').onclick=spDialog;
  $('#rXlsx').onclick=async()=>{await flush(jobsGrid(g,null,E.map(e=>e.id)));
   try{EPS.downloadXLSX(await EPS.exportXLSX({ids:E.map(e=>e.id),apps:[APP]}),`CompEval_${(S.cur.classe||'classe').replace(/[^\w\-]+/g,'_')}_${today()}.xlsx`)}
   catch(e){status('✖ '+(e.message||e),false)}}}
+
+/* ───── Suppression d'une séance : toutes les évaluations d'une grille, à une date, pour la classe ou le groupe choisi ───── */
+function nSeance(g,D){const E=(S.evals[g.id]||{})[D]||{};return elevesDe(S.cur.classe).filter(e=>!isEmpty(E[e.id])).length}
+async function delSeance(){const g=curG();if(!g)return;const D=S.cur.date,cl=S.cur.classe,ids=elevesDe(cl).map(e=>e.id),E=(S.evals[g.id]||{})[D]||{};
+ const n=ids.filter(id=>!isEmpty(E[id])).length;if(!n)return;
+ if(!confirm(`Supprimer la séance du ${frD(D)} ?\n\nGrille : ${g.nom}\nClasse / groupe : ${cl||'Sans classe'}\n\n${n} évaluation(s) seront effacées dans CompEval et dans Mes Apps EPS.\nCette action est définitive. SuiviProf EPS n'est pas modifié.`))return;
+ ids.forEach(id=>delete E[id]);if(S.evals[g.id]&&!Object.keys(E).length)delete S.evals[g.id][D];
+ if(S.sp)delete S.sp[g.id+'|'+D+'|'+cl];save();
+ if(L.length)await flush(ids.map(eid=>({gid:g.id,date:D,eid})));
+ status(`🗑 Séance du ${frD(D)} supprimée (${n} évaluation(s) effacée(s))`,true);
+ const rest=datesOf(g);if(!rest.includes(S.cur.date))S.cur.date=rest[0]||today();save();renderAll()}
+
+/* ───── Transfert vers SuiviProf EPS ─────
+   Les deux applis sont publiées à la même adresse (vinztoc.github.io) et partagent donc le stockage du navigateur :
+   CompEval écrit directement dans le carnet SuiviProf (clé SuiviProfEPS_carnet_v1), dans la séance de même date
+   et de même classe ou groupe, une colonne « Grille CompEval » (même format que les grilles saisies dans SuiviProf). */
+const SP_KEY='SuiviProfEPS_carnet_v1',SP_URL='https://vinztoc.github.io/SuiviProf_EPS/';
+const spRead=()=>{try{const j=JSON.parse(localStorage.getItem(SP_KEY));return j&&j.classes?j:null}catch(e){return null}};
+const spUid=()=>Math.random().toString(36).slice(2,9);
+const gCopy=g=>clone({nom:g.nom,activite:g.activite||'',mode:g.mode==='pts'?'pts':'pct',sur:g.sur??20,arrondi:g.arrondi??.5,niveaux:g.niveaux,items:g.items});
+const SP_MARK=[['appel','Appel','Assiduité'],['tenue','Tenue','Tenue'],['dispense','Disp.','Dispense'],['infirmerie','Infirm.','Infirmerie'],['comportement','Comport.','Comportement']];
+/* Carnets SuiviProf concernés : celui qui porte le nom de la classe / du groupe choisi, sinon ceux (classe ou groupe) des élèves évalués */
+function spCarnets(SP,ids){const cl=S.cur.classe,set=new Set();if(SP.classes[cl])set.add(cl);
+ if(!set.size)ids.forEach(id=>{const e=L.find(z=>z.id===id);if(e)[e.classe,...grpOf(e)].forEach(c=>{if(c&&SP.classes[c])set.add(c)})});
+ return[...set].sort((a,b)=>(b===cl)-(a===cl)||cmpFr(a,b))}
+function spOptions(SP,D,ids){const out=[];
+ for(const cl of spCarnets(SP,ids)){const K=SP.classes[cl];
+  for(const c of K.cycles||[])for(const s of c.seances||[])if(s.date===D)out.push({cl,c,s});
+  if(!out.some(o=>o.cl===cl))for(const c of K.cycles||[])if(c.du&&c.au&&c.du<=D&&D<=c.au)out.push({cl,c,s:null})}
+ return out.sort((a,b)=>(!a.s)-(!b.s)||String(a.s?.heure||'').localeCompare(String(b.s?.heure||'')))}
+const cyNm=c=>(c.ca?c.ca+' · ':'')+(c.nom||'Cycle');
+function spDialog(){const g=curG();if(!g)return;const D=S.cur.date,cl=S.cur.classe,E=elevesDe(cl),ids=E.map(e=>e.id);
+ const evs=ids.map(id=>evOf(g.id,D,id)).filter(ev=>!isEmpty(ev)),nEv=evs.filter(ev=>!ev.st).length,nSt=evs.length-nEv;
+ const SP=spRead(),opts=SP&&evs.length?spOptions(SP,D,ids):[],last=(S.sp||{})[g.id+'|'+D+'|'+cl];
+ let body;
+ if(!evs.length)body=`<p>Aucune évaluation saisie le <b>${frD(D)}</b> pour <b>${esc(cl||'cette classe')}</b> avec cette grille.</p>`;
+ else if(!SP)body=`<p>Aucun carnet SuiviProf EPS n'a été trouvé sur cet appareil.</p><p class="mut">Ouvrez SuiviProf EPS dans ce même navigateur (depuis Mes Apps EPS) et créez le carnet de la classe ou du groupe, puis relancez le transfert.</p>`;
+ else if(!opts.length)body=`<p>Aucune séance le <b>${frD(D)}</b> dans le carnet SuiviProf de <b>${esc(cl)}</b>${spCarnets(SP,ids).length?'':' (ce carnet n\'existe pas encore dans SuiviProf)'}.</p><p class="mut">Générez les séances dans SuiviProf (Organisation) ou créez un cycle couvrant cette date, puis relancez le transfert.</p>`;
+ else body=`<p class="mut">${nEv} évaluation(s)${nSt?` · ${nSt} absent(s) / dispensé(s)`:''} du ${frD(D)} · ${esc(g.nom)}</p>
+  <p style="margin:10px 0 4px"><b>Séance de destination dans SuiviProf :</b></p>
+  ${opts.map((o,k)=>{const col=o.s&&o.s.cols.find(x=>x.type==='grille'&&x.o&&x.o.gid===g.id);
+   return`<label class="opt"><input type="radio" name="spo" value="${k}" ${k===0?'checked':''}><span>${o.s?`<b>${esc(o.cl)}</b> · ${esc(cyNm(o.c))} · séance du ${frD(D)}${o.s.heure?' à '+esc(o.s.heure):''}${o.s.titre?' — '+esc(o.s.titre):''}${o.s.annulee?' (annulée)':''}
+    <small>${col?`La colonne « ${esc(col.nom)} » existe déjà : elle sera mise à jour.`:'Une colonne « Grille CompEval » sera ajoutée à la séance.'}</small>`
+    :`<b>${esc(o.cl)}</b> · ${esc(cyNm(o.c))} · <i>créer une séance le ${frD(D)}</i><small>Aucune séance à cette date : elle sera ajoutée au cycle avec la colonne d'évaluation.</small>`}</span></label>`}).join('')}
+  <p class="hint">Les niveaux et commentaires des élèves évalués remplacent ceux déjà présents dans la colonne. Les absents et dispensés sont reportés dans les colonnes Appel et Dispense de la séance lorsqu'elles sont vides.${last?`<br>Dernier transfert de cette séance : ${new Date(last).toLocaleString('fr-FR',{dateStyle:'short',timeStyle:'short'})}.`:''}</p>`;
+ const d=document.createElement('dialog');d.className='dlg';
+ d.innerHTML=`<h3>➡️ Transférer vers SuiviProf EPS</h3>${body}<div class="row" style="margin-top:14px">${opts.length?'<button class="btn b" data-go>Transférer</button>':''}<button class="btn r" data-x>${opts.length?'Annuler':'Fermer'}</button><span class="sp"></span><a class="btn r sm" href="${SP_URL}" target="_blank" rel="noopener">Ouvrir SuiviProf ↗</a></div><p class="msg" data-res></p>`;
+ document.body.appendChild(d);d.addEventListener('close',()=>d.remove());d.querySelector('[data-x]').onclick=()=>d.close();
+ const go=d.querySelector('[data-go]');if(go)go.onclick=()=>{const o=opts[+(d.querySelector('[name=spo]:checked')||{}).value||0];
+  try{const r=spTransfer(SP,o,g,D,ids);S.sp=S.sp||{};S.sp[g.id+'|'+D+'|'+cl]=Date.now();save();
+   const m=d.querySelector('[data-res]');m.className='msg ok';m.innerHTML=`✔ Transféré dans SuiviProf (${esc(o.cl)}, ${frD(D)}) : ${r.n} évaluation(s)${r.st?` · ${r.st} absence(s) / dispense(s) reportée(s)`:''}${r.cree?' · séance créée':''}${r.nouv?' · colonne ajoutée':' · colonne mise à jour'}.`;
+   go.remove();d.querySelector('[data-x]').textContent='Fermer';status('✔ Transféré vers SuiviProf EPS',true)}
+  catch(x){const m=d.querySelector('[data-res]');m.className='msg ko';m.textContent='✖ '+(x.message||x)}};
+ d.showModal()}
+function spTransfer(SP0,o,g,D,ids){const SP=spRead()||SP0,K=SP.classes[o.cl],c=(K.cycles||[]).find(x=>x.id===o.c.id);if(!c)throw new Error('cycle introuvable dans SuiviProf');
+ c.seq=c.seq||0;let s=o.s&&c.seances.find(x=>x.id===o.s.id),cree=false;
+ if(!s){s={id:spUid(),date:D,cren:'',heure:'',titre:g.activite||'',cols:SP_MARK.map(([type,nom,cat])=>({id:spUid(),code:'c'+(++c.seq),type,nom,cat,o:{}}))};
+  c.seances.push(s);c.seances.sort((a,b)=>(a.date+(a.heure||'')).localeCompare(b.date+(b.heure||'')));cree=true}
+ let col=s.cols.find(x=>x.type==='grille'&&x.o&&x.o.gid===g.id);const nouv=!col;
+ if(!col){col={id:spUid(),code:'c'+(++c.seq),type:'grille',nom:g.nom,cat:'Évaluation',o:{coef:1}};s.cols.push(col)}
+ col.o.g=gCopy(g);col.o.gid=g.id;s.fold=false;c.vals=c.vals||{};
+ const mk=t=>s.cols.find(x=>x.type===t);let n=0,st=0;
+ for(const id of ids){const ev=evOf(g.id,D,id);if(isEmpty(ev))continue;const r=c.vals[id]=c.vals[id]||{};
+  if(ev.st){const [t,v]=ev.st==='Absent'?['appel','A']:['dispense','DT'],k=mk(t);if(k&&(r[k.id]==null||r[k.id]===''))r[k.id]=v;st++;continue}
+  r[col.id]={c:g.items.map((_,i)=>valid(g,(ev.c||[])[i])?ev.c[i]:null),com:ev.com||''};n++}
+ localStorage.setItem(SP_KEY,JSON.stringify(SP));return{n,st,nouv,cree}}
 
 /* ───── Démarrage ───── */
 (async()=>{$('#ver').textContent=typeof APP_VERSION!=='undefined'?'v'+APP_VERSION:'';await loadEleves();

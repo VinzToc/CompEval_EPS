@@ -1,5 +1,16 @@
 [
  {
+  "v": "1.3.0",
+  "date": "2026-11-24",
+  "titre": "Transfert vers SuiviProf EPS",
+  "items": [
+   "Nouveau bouton « ➡️ Transférer vers SuiviProf » (onglets Évaluer et Résultats) : les évaluations de la classe ou du groupe à la date choisie sont reportées dans la séance de même date de SuiviProf EPS, dans une colonne « Grille CompEval » (niveaux, note et commentaires).",
+   "Les absents et dispensés sont reportés dans les colonnes Appel et Dispense de la séance si elles sont vides. S'il n'y a pas de séance à cette date mais qu'un cycle la couvre, la séance peut être créée.",
+   "Un nouveau transfert met à jour la même colonne, sans la dupliquer.",
+   "Nouveau bouton « 🗑 Supprimer la séance » : efface toutes les évaluations de la séance (grille, date, classe ou groupe) dans CompEval et dans Mes Apps EPS, après confirmation."
+  ]
+ },
+ {
   "v": "1.2.0",
   "date": "2026-11-24",
   "items": [
