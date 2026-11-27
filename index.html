@@ -434,8 +434,9 @@ function renderEditor(){const g=draft,H=$('#gEdit');resize(g,g.items.length,g.ni
   for(const d of Object.values(S.evals[g.id]||{}))for(const ev of Object.values(d)){ev.c=(ev.c||[]).slice(0,g.items.length).map(j=>valid(g,j)?j:null)}
   if(i>=0)S.grids[i]=g;else S.grids.push(g);S.cur.gid=g.id;save();draft=null;H.hidden=true;renderList();
   // Mise à jour des lignes déjà enregistrées dans Mes Apps EPS (renommage, barème, intitulés…)
-  if(old&&L.length){const jobs=jobsGrid(g);if(jobs.length){await flush(jobs,{[g.id]:old.nom!==g.nom?[old.nom]:[]});const gm=$('#gMsg');if(gm){gm.className='msg ok';gm.textContent=`✔ Grille enregistrée · ${jobs.length} saisie(s) mises à jour dans Mes Apps EPS`}return}}
-  const gm=$('#gMsg');if(gm){gm.className='msg ok';gm.textContent='✔ Grille enregistrée'}}}
+  const nSP=spCols(g.id),txSP=nSP?` · ${nSP} colonne(s) SuiviProf EPS recalculée(s) (immédiatement si SuiviProf est ouvert, sinon à sa prochaine ouverture)`:'';
+  if(old&&L.length){const jobs=jobsGrid(g);if(jobs.length){await flush(jobs,{[g.id]:old.nom!==g.nom?[old.nom]:[]});const gm=$('#gMsg');if(gm){gm.className='msg ok';gm.textContent=`✔ Grille enregistrée · ${jobs.length} saisie(s) mises à jour dans Mes Apps EPS${txSP}`}return}}
+  const gm=$('#gMsg');if(gm){gm.className='msg ok';gm.textContent='✔ Grille enregistrée'+txSP}}}
 
 /* ───── RÉSULTATS ───── */
 function renderRes(){fillSelectors('r');const g=curG(),B=$('#rBody');
@@ -495,6 +496,8 @@ function spOptions(SP,D,ids){const out=[];
   for(const c of K.cycles||[])for(const s of c.seances||[])if(s.date===D)out.push({cl,c,s});
   if(!out.some(o=>o.cl===cl))for(const c of K.cycles||[])if(c.du&&c.au&&c.du<=D&&D<=c.au)out.push({cl,c,s:null})}
  return out.sort((a,b)=>(!a.s)-(!b.s)||String(a.s?.heure||'').localeCompare(String(b.s?.heure||'')))}
+/* Nombre de colonnes du carnet SuiviProf qui utilisent cette grille (SuiviProf recopie la grille à jour et recalcule les notes) */
+function spCols(gid){const SP=spRead();let n=0;if(SP)for(const K of Object.values(SP.classes))for(const c of K.cycles||[])for(const se of c.seances||[])for(const col of se.cols||[])if(col.type==='grille'&&col.o&&col.o.gid===gid)n++;return n}
 const cyNm=c=>(c.ca?c.ca+' · ':'')+(c.nom||'Cycle');
 function spDialog(){const g=curG();if(!g)return;const D=S.cur.date,cl=S.cur.classe,E=elevesDe(cl),ids=E.map(e=>e.id);
  const evs=ids.map(id=>evOf(g.id,D,id)).filter(ev=>!isEmpty(ev)),nEv=evs.filter(ev=>!ev.st).length,nSt=evs.length-nEv;

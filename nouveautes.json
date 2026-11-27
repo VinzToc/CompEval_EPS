@@ -1,5 +1,15 @@
 [
  {
+  "v": "1.5.0",
+  "date": "2026-11-27",
+  "titre": "Barème synchronisé avec SuiviProf EPS",
+  "items": [
+   "Modifier le barème, la répartition des points, les niveaux ou les compétences d'une grille met désormais à jour les colonnes « Grille CompEval » de SuiviProf EPS : les notes des élèves y sont recalculées (immédiatement si SuiviProf est ouvert, sinon à sa prochaine ouverture).",
+   "Le message d'enregistrement de la grille indique le nombre de colonnes SuiviProf concernées.",
+   "Un barème modifié depuis SuiviProf (bouton « ⚖️ Barème ») est repris dans la grille de CompEval et les notes sont réenregistrées dans Mes Apps EPS."
+  ]
+ },
+ {
   "v": "1.4.0",
   "date": "2026-11-24",
   "titre": "Évaluations reçues de SuiviProf EPS",
